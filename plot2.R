@@ -61,7 +61,7 @@ data_dt[, Global_active_power := as.numeric(Global_active_power)]
 data_dt[, date_time := as.POSIXct(paste(Date, Time), format = '%d/%m/%Y %H:%M:%S')]
 
 # Filter date_time for specific date range
-filtered_dt <- data_dt[date_time >= as.POSIXct('2007-02-01') & date_time < as.POSIXct('2007-02-02')]
+filtered_dt <- data_dt[date_time >= as.POSIXct('2007-02-01') & date_time < as.POSIXct('2007-02-03')]
 print(nrow(filtered_dt))
 
 # Check for NA values in date_time and Global_active_power
@@ -73,10 +73,17 @@ filtered_dt <- filtered_dt[!is.na(date_time) & !is.na(Global_active_power)]
 
 png(file='plot2.png', width=480, height=480)
 
+# Find the start of each day in the data
+day_starts <- seq(from = as.POSIXct("2007-02-01"), to = as.POSIXct("2007-02-03"), by = "day")
+
+# line plot
 with(filtered_dt, plot(date_time, 
                        Global_active_power, 
                        type = 'l',
                        xlab = '',
-                       ylab = 'Global Active Power (kilowatts)'))
+                       ylab = 'Global Active Power (kilowatts)',
+                       xaxt = 'n'))   # suppress x-axis tickmarks/labels
 
+# Customise x-axis labels to show days of the week
+axis.POSIXct(1, at = day_starts, format = '%a')
 dev.off()
